@@ -75,7 +75,7 @@ SRC = 	ft_abs.c \
 		ft_intlen.c
 OBJ = $(SRC:.c=.o)
 CC = gcc
-CFLAGS = -c -Wall -Werror -Wextra -I.
+CFLAGS = -c -Wall -Werror -Wextra -I includes/
 ARRC = ar rc
 REMOVE = /bin/rm -f
 RANLIB = ranlib
