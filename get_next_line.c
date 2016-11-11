@@ -6,7 +6,7 @@
 /*   By: varnaud <varnaud@student.42.us.org>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/05 20:11:53 by varnaud           #+#    #+#             */
-/*   Updated: 2016/11/11 09:06:06 by varnaud          ###   ########.fr       */
+/*   Updated: 2016/11/11 12:43:30 by varnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,11 +115,6 @@ int			get_next_line(const int fd, char **line)
 	f = current->content;
 	if (!(f->isread) && read_file(f, fd) == -1)
 		return (-1);
-	if (f->line != NULL && !(*line = NULL))
-	{
-		free(f->line);
-		f->line = NULL;
-	}
 	if (f->isdone)
 		return (0);
 	*line = f->isbinary ? read_binary(f) : read_line(f);
