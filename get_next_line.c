@@ -6,7 +6,7 @@
 /*   By: varnaud <varnaud@student.42.us.org>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/05 20:11:53 by varnaud           #+#    #+#             */
-/*   Updated: 2016/11/11 08:52:52 by varnaud          ###   ########.fr       */
+/*   Updated: 2016/11/11 09:06:06 by varnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ static int	read_file(t_fd *f, int fd)
 		ft_memadd((void**)&(f->file), buf, f->size, bytes_read);
 		f->size += bytes_read;
 	}
-	write(1, f->file, f->size);
 	f->isread = 1;
 	return (1);
 }
@@ -116,11 +115,10 @@ int			get_next_line(const int fd, char **line)
 	f = current->content;
 	if (!(f->isread) && read_file(f, fd) == -1)
 		return (-1);
-	if (f->line != NULL)
+	if (f->line != NULL && !(*line = NULL))
 	{
 		free(f->line);
 		f->line = NULL;
-		*line = NULL;
 	}
 	if (f->isdone)
 		return (0);
