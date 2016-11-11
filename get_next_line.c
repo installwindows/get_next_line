@@ -6,7 +6,7 @@
 /*   By: varnaud <varnaud@student.42.us.org>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/05 20:11:53 by varnaud           #+#    #+#             */
-/*   Updated: 2016/11/11 07:24:21 by varnaud          ###   ########.fr       */
+/*   Updated: 2016/11/11 08:04:31 by varnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,16 +109,17 @@ int			get_next_line(const int fd, char **line)
 	{
 		f = (t_fd*)malloc(sizeof(t_fd));
 		f->isread = 0;
-		current = ft_lstnew(0, sizeof(t_fd));
+		ft_lstadd(&list, (current = ft_lstnew(f, sizeof(t_fd))));
 		free(f);
-		ft_lstadd(&list, current);
 	}
-	if ((f = current->content) && !(f->isread) && read_file(f, fd) == -1)
+	f = current->content;
+	if (!(f->isread) && read_file(f, fd) == -1)
 		return (-1);
-	if (f->line != NULL && ((*line = NULL) || 1))
+	if (f->line != NULL)
 	{
 		free(f->line);
 		f->line = NULL;
+		*line = NULL;
 	}
 	if (f->isdone)
 		return (0);
