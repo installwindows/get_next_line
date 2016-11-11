@@ -6,7 +6,7 @@
 /*   By: varnaud <varnaud@student.42.us.org>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/05 20:11:53 by varnaud           #+#    #+#             */
-/*   Updated: 2016/11/11 08:04:31 by varnaud          ###   ########.fr       */
+/*   Updated: 2016/11/11 08:52:52 by varnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ static int	read_file(t_fd *f, int fd)
 		ft_memadd((void**)&(f->file), buf, f->size, bytes_read);
 		f->size += bytes_read;
 	}
+	write(1, f->file, f->size);
 	f->isread = 1;
 	return (1);
 }
@@ -89,7 +90,7 @@ static char	*read_line(t_fd *f)
 	f->line = (char*)malloc((size + 1) * sizeof(char));
 	ft_memcpy(f->line, f->file, size);
 	f->line[size] = '\0';
-	t = ft_memalloc(f->size - size - 1);
+	t = ft_memalloc(f->size - size);
 	ft_memcpy(t, f->file + size + 1, f->size - size);
 	f->size -= (size + 1);
 	free(f->file);
