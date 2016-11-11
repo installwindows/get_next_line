@@ -6,7 +6,7 @@
 /*   By: varnaud <varnaud@student.42.us.org>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/27 12:31:31 by varnaud           #+#    #+#             */
-/*   Updated: 2016/10/27 15:15:22 by varnaud          ###   ########.fr       */
+/*   Updated: 2016/11/11 06:36:46 by varnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ void	*ft_memadd(void **dest, void *src, size_t dest_size, size_t src_size)
 		src_size--;
 		p[src_size + dest_size] = s[src_size];
 	}
+	free(*dest);
 	*dest = p;
 	return ((void*)p);
 }

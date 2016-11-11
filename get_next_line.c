@@ -6,7 +6,7 @@
 /*   By: varnaud <varnaud@student.42.us.org>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/05 20:11:53 by varnaud           #+#    #+#             */
-/*   Updated: 2016/11/10 21:24:44 by varnaud          ###   ########.fr       */
+/*   Updated: 2016/11/11 06:40:47 by varnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ static int	read_file(t_fd *f, int fd)
 		ft_memadd((void**)&(f->file), buf, f->size, bytes_read);
 		f->size += bytes_read;
 	}
+	f->isread = 1;
 	return (1);
 }
 
@@ -73,7 +74,7 @@ static char	*read_line(t_fd *f)
 	int		size;
 
 	t = ft_memchr(f->file, '\n', f->size);
-	if (t != NULL && ft_memchr(t + 1, '\n', f->size - (t - f->file)) == NULL)
+	if (t != NULL && f->size == t - f->file + 1)
 	{
 		f->isdone = 1;
 		size = f->size - 1;
@@ -107,12 +108,14 @@ int			get_next_line(const int fd, char **line)
 	if ((current = ft_lstget(list, &fd, cmp_fd)) == NULL)
 	{
 		f = (t_fd*)malloc(sizeof(t_fd));
+		f->isread = 0;
 		current = ft_lstnew(f, sizeof(t_fd));
+		free(f);
 		ft_lstadd(&list, current);
-		if (read_file(current->content, fd) == -1)
-			return (-1);
 	}
 	f = current->content;
+	if (!(f->isread) && read_file(f, fd) == -1)
+		return (-1);
 	if (f->line != NULL)
 	{
 		free(f->line);
