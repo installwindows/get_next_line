@@ -6,7 +6,7 @@
 /*   By: varnaud <varnaud@student.42.us.org>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/05 20:11:53 by varnaud           #+#    #+#             */
-/*   Updated: 2016/11/11 12:43:30 by varnaud          ###   ########.fr       */
+/*   Updated: 2016/11/23 23:52:39 by varnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,10 @@ int			get_next_line(const int fd, char **line)
 	if (!(f->isread) && read_file(f, fd) == -1)
 		return (-1);
 	if (f->isdone)
+	{
+		remove_from_list(&list, fd);
 		return (0);
+	}
 	*line = f->isbinary ? read_binary(f) : read_line(f);
 	return (f->isbinary ? f->bytes_read : 1);
 }
