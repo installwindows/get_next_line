@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   gnl.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: varnaud <varnaud@student.42.us.org>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/03/23 23:42:22 by varnaud           #+#    #+#             */
+/*   Updated: 2017/03/24 00:08:18 by varnaud          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <stdlib.h>
 #include <unistd.h>
 #include "gnl.h"
@@ -11,7 +23,10 @@ static void	increment_buf(t_fd *f)
 	new = malloc(sizeof(char) * f->size);
 	i = 0;
 	while (f->buf[i])
-		new[i] = f->buf[i++];
+	{
+		new[i] = f->buf[i];
+		i++;
+	}
 	new[i] = '\0';
 	f->i = i;
 	free(f->buf);
@@ -22,34 +37,26 @@ static int	read_fd(t_fd *f, char **line)
 {
 	int		i;
 	int		b;
-	
-	i = 0;
-	if (f->i + BUFF_SIZE > f->size)
+
+	if (!(i = 0) && f->i + BUFF_SIZE >= f->size)
 		increment_buf(f);
 	while (f->buf[i] && f->buf[i] != '\n')
 		i++;
-	if (f->buf[i] == '\n')
+	if (f->buf[i] == '\n' && (b = -1))
 	{
 		*line = malloc(sizeof(char) * (i + 1));
+		while (++b < i)
+			(*line)[b] = f->buf[b];
+		(*line)[i] = '\0';
 		b = 0;
-		while (b < i)
-			line[b] = f->buf[b++];
-		(*line)[b] = '\0';
-		b = 0;
-		while (buf[i])
-			buf[b++] = buf[++i];
-		buf[i] = '\0';
-		f->i = i;
+		while ((f->buf[b] = f->buf[++i]))
+			b++;
+		return ((f->i = b) || 1);
 	}
-	else
-	{
-		if ((b = read(f->fd, &f->buf[i], BUFF_SIZE)) == -1 || !b)
-			return (b);
-		f->i += b;
-		f->buf[b] = '\0';
-		return (read_fd(f, line));
-	}
-	return (1);
+	if ((b = read(f->fd, &f->buf[f->i], BUFF_SIZE)) == -1 || !b)
+		return (b);
+	f->i += b;
+	return ((f->buf[f->i] = '\0') || read_fd(f, line));
 }
 
 static t_fd	*add_fd(t_fd **list, int fd)
@@ -64,6 +71,7 @@ static t_fd	*add_fd(t_fd **list, int fd)
 	new->i = 0;
 	new->next = *list;
 	*list = new;
+	return (new);
 }
 
 static t_fd	*get_or_rm_fd(t_fd **l, int fd, int v)
@@ -100,16 +108,24 @@ int			gnl(const int fd, char **line)
 	static t_fd	*list;
 	t_fd		*current;
 	int			r;
+	int			i;
 
 	if (fd < 0)
 		return (-1);
-	if (!(current = get_fd(list, fd)))
+	if (!(current = get_or_rm_fd(&list, fd, 1)))
 		current = add_fd(&list, fd);
 	r = read_fd(current, line);
-	if (r == 0)
+	if (r == 0 && current->buf[0])
 	{
-		free(current->buf);
-		
+		i = 0;
+		while (current->buf[i])
+			i++;
+		*line = malloc(sizeof(char) * (++i));
+		while (--i >= 0)
+			(*line)[i] = current->buf[i];
+		current->buf[0] = '\0';
+		return (1);
+		//free(current->buf);
 	}
 	return (r);
 }
