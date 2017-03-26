@@ -59,7 +59,7 @@ static int	read_fd(t_fd *f, char **line)
 	return ((f->buf[f->i] = '\0') || read_fd(f, line));
 }
 
-static t_fd	*add_fd(t_fd **list, int fd)
+t_fd		*add_fd(t_fd **list, int fd)
 {
 	t_fd	*new;
 
@@ -74,40 +74,29 @@ static t_fd	*add_fd(t_fd **list, int fd)
 	return (new);
 }
 
-static t_fd	*get_or_rm_fd(t_fd **l, int fd, int v)
+t_fd		*get_or_rm_fd(t_fd **l, int fd, int del)
 {
-	t_fd	*list;
 	t_fd	*previous;
+	t_fd	*head;
 
-	list = *l;
-	previous = list ? (*l)->next : NULL;
-	if (v)
-		while (list)
-		{
-			if (list->fd == fd)
-				return (list);
-			list = list->next;
-		}
-	else
+	head = *l;
+	previous = head;
+	while (head)
 	{
-		if (list->fd == fd)
-		{
-			free(list->buf);
-			free(list);
-			return (*l = NULL);
-		}
-		while (previous)
-		{
-			if (previous->fd == fd)
+		if (head->fd == fd)
+			if (del)
 			{
-				list->next = previous->next;
-				free(previous->buf);
-				free(previous);
-				return (NULL);
+				previous->next = head->next;
+				if (head->fd == (*l)->fd)
+					*l = (*l)->next;
+				free(head->buf);
+				free(head);
+				break ;
 			}
-			previous = previous->next;
-			list = list->next;
-		}
+			else
+				return (head);
+		previous = head;
+		head = head->next;
 	}
 	return (NULL);
 }
@@ -121,7 +110,7 @@ int			gnl(const int fd, char **line)
 
 	if (fd < 0)
 		return (-1);
-	if (!(current = get_or_rm_fd(&list, fd, 1)))
+	if (!(current = get_or_rm_fd(&list, fd, 0)))
 		current = add_fd(&list, fd);
 	r = read_fd(current, line);
 	if (r == 0 && current->buf[0])
@@ -136,6 +125,6 @@ int			gnl(const int fd, char **line)
 		return (1);
 	}
 	else if (r == 0)
-		get_or_rm_fd(&list, fd, 0);
+		get_or_rm_fd(&list, fd, 1);
 	return (r);
 }

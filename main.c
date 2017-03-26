@@ -16,46 +16,48 @@
 #include <stdlib.h>
 #include "gnl.h"
 
+static void	list_list(t_fd *list)
+{
+	while (list)
+	{
+		printf("%d\n", list->fd);
+		list = list->next;
+	}
+}
+
 int			main(int argc, char **argv)
 {
 	int		fd;
 	int		r;
 	char	*line;
 
-	if (argc == 1)
+	if (argc > 1 && argv[1][0] == '-' && argv[1][1] == 'f' && argv[1][2] == 'd' && argv[1][3] == '\0')
 	{
-		int fd1 = open("file1", O_RDONLY);
-		int fd2 = open("file2", O_RDONLY);
-		int fd3 = open("file3", O_RDONLY);
-		int fd4 = open("file4", O_RDONLY);
-
-		r = gnl(fd1, &line);
-		printf("fd1: %d:|%s|\n", r, line);
-		if (r) free(line);
-		r = gnl(fd2, &line);
-		printf("fd2: %d:|%s|\n", r, line);
-		if (r) free(line);
-		r = gnl(fd3, &line);
-		printf("fd3: %d:|%s|\n", r, line);
-		if (r) free(line);
-		r = gnl(fd4, &line);
-		printf("fd4: %d:|%s|\n", r, line);
-		if (r) free(line);
-		r = gnl(fd3, &line);
-		printf("fd3: %d:|%s|\n", r, line);
-		if (r) free(line);
-		r = gnl(fd2, &line);
-		printf("fd2: %d:|%s|\n", r, line);
-		if (r) free(line);
-		r = gnl(fd1, &line);
-		printf("fd1: %d:|%s|\n", r, line);
-		if (r) free(line);
-
-
-		r = gnl(fd4, &line);
-		printf("fd4: %d:|%s|\n", r, line);
-		if (r) free(line);
-
+		t_fd	*head = NULL;
+		
+		add_fd(&head, 1);
+		add_fd(&head, 2);
+		add_fd(&head, 3);
+		add_fd(&head, 4);
+		add_fd(&head, 5);
+		add_fd(&head, 6);
+		add_fd(&head, 7);
+		list_list(head);
+		printf("-----\n");
+		
+		get_or_rm_fd(&head, 5, 1);
+		get_or_rm_fd(&head, 7, 1);
+		get_or_rm_fd(&head, 1, 1);
+		add_fd(&head, 8);
+		get_or_rm_fd(&head, 6, 1);
+		add_fd(&head, 9);
+		get_or_rm_fd(&head, 2, 1);
+		get_or_rm_fd(&head, 9, 1);
+		get_or_rm_fd(&head, 4, 1);
+		get_or_rm_fd(&head, 8, 1);
+		get_or_rm_fd(&head, 3, 1);
+		add_fd(&head, 10);
+		list_list(head);
 	}
 	else if (argc > 1)
 	{
