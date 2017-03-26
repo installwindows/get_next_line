@@ -12,15 +12,15 @@
 
 #ifndef GNL_H
 # define GNL_H
-# define BUFF_SIZE 1024
+# define BUFF_SIZE 1
 
 typedef struct	s_fd
 {
 	int			fd;
 	int			i;
 	int			size;
-	char		*buf;
 	struct s_fd	*next;
+	char		*buf;
 }				t_fd;
 
 int				gnl(const int fd, char **line);

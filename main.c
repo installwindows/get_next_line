@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include <fcntl.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include "gnl.h"
 
@@ -21,7 +22,42 @@ int			main(int argc, char **argv)
 	int		r;
 	char	*line;
 
-	if (argc > 1)
+	if (argc == 1)
+	{
+		int fd1 = open("file1", O_RDONLY);
+		int fd2 = open("file2", O_RDONLY);
+		int fd3 = open("file3", O_RDONLY);
+		int fd4 = open("file4", O_RDONLY);
+
+		r = gnl(fd1, &line);
+		printf("fd1: %d:|%s|\n", r, line);
+		if (r) free(line);
+		r = gnl(fd2, &line);
+		printf("fd2: %d:|%s|\n", r, line);
+		if (r) free(line);
+		r = gnl(fd3, &line);
+		printf("fd3: %d:|%s|\n", r, line);
+		if (r) free(line);
+		r = gnl(fd4, &line);
+		printf("fd4: %d:|%s|\n", r, line);
+		if (r) free(line);
+		r = gnl(fd3, &line);
+		printf("fd3: %d:|%s|\n", r, line);
+		if (r) free(line);
+		r = gnl(fd2, &line);
+		printf("fd2: %d:|%s|\n", r, line);
+		if (r) free(line);
+		r = gnl(fd1, &line);
+		printf("fd1: %d:|%s|\n", r, line);
+		if (r) free(line);
+
+
+		r = gnl(fd4, &line);
+		printf("fd4: %d:|%s|\n", r, line);
+		if (r) free(line);
+
+	}
+	else if (argc > 1)
 	{
 		while (*++argv)
 		{
@@ -37,6 +73,7 @@ int			main(int argc, char **argv)
 				printf("%d:|%s|\n", r, line);
 				free(line);
 			}
+			close(fd);
 			printf("-----\n");
 		}
 	}

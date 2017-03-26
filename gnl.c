@@ -79,8 +79,8 @@ static t_fd	*get_or_rm_fd(t_fd **l, int fd, int v)
 	t_fd	*list;
 	t_fd	*previous;
 
-	previous = *l;
 	list = *l;
+	previous = list ? (*l)->next : NULL;
 	if (v)
 		while (list)
 		{
@@ -90,13 +90,22 @@ static t_fd	*get_or_rm_fd(t_fd **l, int fd, int v)
 		}
 	else
 	{
-		while (list)
+		if (list->fd == fd)
 		{
-			if (list->fd == fd)
+			free(list->buf);
+			free(list);
+			return (*l = NULL);
+		}
+		while (previous)
+		{
+			if (previous->fd == fd)
 			{
-				previous = list->next;
+				list->next = previous->next;
+				free(previous->buf);
+				free(previous);
+				return (NULL);
 			}
-			previous = list;
+			previous = previous->next;
 			list = list->next;
 		}
 	}
@@ -125,7 +134,8 @@ int			gnl(const int fd, char **line)
 			(*line)[i] = current->buf[i];
 		current->buf[0] = '\0';
 		return (1);
-		//free(current->buf);
 	}
+	else if (r == 0)
+		get_or_rm_fd(&list, fd, 0);
 	return (r);
 }
