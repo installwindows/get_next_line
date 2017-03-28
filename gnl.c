@@ -6,7 +6,7 @@
 /*   By: varnaud <varnaud@student.42.us.org>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/23 23:42:22 by varnaud           #+#    #+#             */
-/*   Updated: 2017/03/24 00:08:18 by varnaud          ###   ########.fr       */
+/*   Updated: 2017/03/28 10:50:24 by varnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ static int	read_fd(t_fd *f, char **line)
 	return ((f->buf[f->i] = '\0') || read_fd(f, line));
 }
 
-t_fd		*add_fd(t_fd **list, int fd)
+static t_fd	*add_fd(t_fd **list, int fd)
 {
 	t_fd	*new;
 
@@ -74,7 +74,7 @@ t_fd		*add_fd(t_fd **list, int fd)
 	return (new);
 }
 
-t_fd		*get_or_rm_fd(t_fd **l, int fd, int del)
+static t_fd	*get_or_rm_fd(t_fd **l, int fd, int del)
 {
 	t_fd	*previous;
 	t_fd	*head;
@@ -84,6 +84,7 @@ t_fd		*get_or_rm_fd(t_fd **l, int fd, int del)
 	while (head)
 	{
 		if (head->fd == fd)
+		{
 			if (del)
 			{
 				previous->next = head->next;
@@ -95,6 +96,7 @@ t_fd		*get_or_rm_fd(t_fd **l, int fd, int del)
 			}
 			else
 				return (head);
+		}
 		previous = head;
 		head = head->next;
 	}

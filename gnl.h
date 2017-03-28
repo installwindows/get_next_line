@@ -6,7 +6,7 @@
 /*   By: varnaud <varnaud@student.42.us.org>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/23 23:43:03 by varnaud           #+#    #+#             */
-/*   Updated: 2017/03/24 00:22:50 by varnaud          ###   ########.fr       */
+/*   Updated: 2017/03/28 10:50:37 by varnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,5 @@ typedef struct	s_fd
 }				t_fd;
 
 int				gnl(const int fd, char **line);
-
-t_fd			*get_or_rm_fd(t_fd **l, int fd, int del);
-t_fd			*add_fd(t_fd **list, int fd);
 
 #endif
